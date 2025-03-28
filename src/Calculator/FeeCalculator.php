@@ -19,6 +19,6 @@ class FeeCalculator implements FeeCalculatorInterface
     {
         $tempAmount = ($currency == self::BASE_CURRENCY || $rate == 0.0) ? $amount : $amount / $rate;
         $feeRate = $isEu ? $this->config->get('eu_fee_rate') : $this->config->get('non_eu_fee_rate');
-        return $tempAmount * $feeRate;
+        return round($tempAmount * $feeRate, 2, PHP_ROUND_HALF_UP);
     }
 }
