@@ -22,12 +22,12 @@ interface TransactionHandlerInterface {
      * @param array $transaction
      * @return float
      */
-    public function handle(array $transaction): void;
+    public function handle(array $transaction): ?float;
 
     /**
      * Handle all transactions
      * @param array $transactions
-     * @return void
+     * @return array Array of fees
      */
-    public function handleAll(array $transactions): void;
+    public function handleAll(array $transactions): array;
 }

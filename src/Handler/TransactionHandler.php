@@ -23,7 +23,7 @@ class TransactionHandler implements TransactionHandlerInterface
      * @return void
      * @throws \InvalidArgumentException If transaction data is invalid
      */
-    public function handle(array $transaction): void
+    public function handle(array $transaction): ?float    
     {
         $this->validateTransaction($transaction);
         
@@ -47,9 +47,9 @@ class TransactionHandler implements TransactionHandlerInterface
                 $isEu
             );
             
-            echo $fee . PHP_EOL;
+            return $fee;
         } catch (\Exception $e) {
-            echo "Error: " . $e->getMessage() . PHP_EOL;
+            return null;
         }
     }
 
@@ -57,13 +57,18 @@ class TransactionHandler implements TransactionHandlerInterface
      * Process multiple transactions
      *
      * @param array $transactions Array of transaction data
-     * @return void
+     * @return array Array of fees
      */
-    public function handleAll(array $transactions): void
+    public function handleAll(array $transactions): array
     {
+        $output = [];
         foreach ($transactions as $transaction) {
-            $this->handle($transaction);
+            $fee = $this->handle($transaction);
+            if ($fee !== null) {
+                $output[] = $fee;
+            }
         }
+        return $output;
     }
     
     /**
