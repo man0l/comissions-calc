@@ -18,7 +18,9 @@ class Config implements ConfigInterface
             ],
             'bin_lookup' => 'https://lookup.binlist.net/',
             'exchange_rate' => 'https://api.exchangeratesapi.io/latest',
-            'access_key' => getenv('ACCESS_KEY')
+            'access_key' => getenv('ACCESS_KEY'),
+            'eu_fee_rate' => 0.01,
+            'non_eu_fee_rate' => 0.02
         ];
     }
     
