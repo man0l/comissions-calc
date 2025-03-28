@@ -31,8 +31,12 @@ $transactions = $reader->read();
 $config = new Config();
 $binChecker = new BinChecker($config, new CurlHttpClient());
 $exchangeRate = new ExchangeRate($config, new CurlHttpClient());
-$calculator = new FeeCalculator();
+$calculator = new FeeCalculator($config);
 $cache = new FileCache();
 
 $handler = new TransactionHandler($binChecker, $exchangeRate, $cache, $calculator);
-$handler->handleAll($transactions);
+$fees = $handler->handleAll($transactions);
+
+foreach ($fees as $fee) {
+    echo $fee . PHP_EOL;
+}
