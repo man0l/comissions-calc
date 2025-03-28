@@ -50,7 +50,7 @@ class FeeCalculatorTest extends TestCase
         
         $fee = $this->feeCalculator->calculateFee($amount, $currency, $rate, $isEu);
         
-        $expected = (130.00 / 1.1) * 0.01;
+        $expected = round((130.00 / 1.1) * 0.01, 2, PHP_ROUND_HALF_UP);
         $this->assertEquals($expected, $fee);
     }
     
@@ -63,7 +63,7 @@ class FeeCalculatorTest extends TestCase
         
         $fee = $this->feeCalculator->calculateFee($amount, $currency, $rate, $isEu);
         
-        $expected = (130.00 / 1.1) * 0.02;
+        $expected = round((130.00 / 1.1) * 0.02, 2, PHP_ROUND_HALF_UP);
         $this->assertEquals($expected, $fee);
     }
     
@@ -76,7 +76,7 @@ class FeeCalculatorTest extends TestCase
         
         $fee = $this->feeCalculator->calculateFee($amount, $currency, $rate, $isEu);
         
-        $expected = 90.00 * 0.01;
+        $expected = round(90.00 * 0.01, 2, PHP_ROUND_HALF_UP);
         $this->assertEquals($expected, $fee);
     }
     
@@ -101,7 +101,7 @@ class FeeCalculatorTest extends TestCase
         
         $fee = $this->feeCalculator->calculateFee($amount, $currency, $rate, $isEu);
         
-        $expected = (10000.00 / 0.9) * 0.01;
+        $expected = round((10000.00 / 0.9) * 0.01, 2, PHP_ROUND_HALF_UP);
         $this->assertEquals($expected, $fee);
     }
 } 
