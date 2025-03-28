@@ -6,11 +6,20 @@ use App\Exceptions\InvalidTransactionException;
 
 class FileReader
 {
+    private $filePath;
     private $fp;
 
     public function __construct(string $filePath)
     {
-        $this->fp = fopen($filePath, 'r');
+        $this->filePath = $filePath;
+    }
+    
+    protected function getStream()
+    {
+        if ($this->fp === null) {
+            $this->fp = fopen($this->filePath, 'r');
+        }
+        return $this->fp;
     }
     
     private function validateTransaction(array $transaction): void
@@ -39,7 +48,9 @@ class FileReader
     public function read(): array
     {
         $transactions = [];
-        while (($line = fgets($this->fp)) !== false) {
+        $fp = $this->getStream();
+        
+        while (($line = fgets($fp)) !== false) {
             $data = json_decode($line, true);
             if (json_last_error() !== JSON_ERROR_NONE) {
                 throw new InvalidTransactionException('Invalid JSON format');
@@ -53,6 +64,8 @@ class FileReader
 
     public function __destruct()
     {
-        fclose($this->fp);
+        if ($this->fp !== null) {
+            fclose($this->fp);
+        }
     }
 }
