@@ -10,7 +10,7 @@ use App\Api\ExchangeRate;
 use App\Cache\FileCache;
 use App\Handler\TransactionHandler;
 use App\Config\Config;
-
+use App\Api\CurlHttpClient;
 use Symfony\Component\Dotenv\Dotenv;
 
 if (file_exists(__DIR__ . '/.env')) {
@@ -29,8 +29,8 @@ $reader = new FileReader($transactionsFile);
 $transactions = $reader->read();
 
 $config = new Config();
-$binChecker = new BinChecker($config);
-$exchangeRate = new ExchangeRate($config);
+$binChecker = new BinChecker($config, new CurlHttpClient());
+$exchangeRate = new ExchangeRate($config, new CurlHttpClient());
 $calculator = new FeeCalculator();
 $cache = new FileCache();
 
