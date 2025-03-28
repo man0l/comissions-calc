@@ -36,6 +36,10 @@ class ExchangeRate implements ExchangeRateInterface
             throw new ExchangeRateException('ExchangeRate.php: Invalid response');
         }
 
+        if (!isset($data['rates'][$currency])) {
+            throw new ExchangeRateException('ExchangeRate.php: Currency not found');
+        }
+
         return $data['rates'][$currency];
     }
 }
