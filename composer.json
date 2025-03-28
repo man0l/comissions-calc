@@ -13,6 +13,7 @@
     ],
     "require": {
         "ext-curl": "*",
-        "ext-json": "*"
+        "ext-json": "*",
+        "symfony/dotenv": "^7.2"
     }
 }

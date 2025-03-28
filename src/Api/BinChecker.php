@@ -2,11 +2,33 @@
 
 namespace App\Api;
 
-class BinChecker
-{
-    private $apiUrl = 'https://lookup.binlist.net/';
+use App\Contracts\BinCheckerInterface;
+use App\Contracts\ConfigInterface;
+use App\Exceptions\BinLookupException;
 
-    public function check(string $bin): array
+class BinChecker implements BinCheckerInterface
+{
+    private $apiUrl;
+    private $euCountries;
+
+    public function __construct(ConfigInterface $config)
+    {
+        $this->apiUrl = $config->get('bin_lookup');
+        $this->euCountries = $config->get('eu_countries');
+    }
+
+    public function lookup(string $bin): bool
+    {
+        $country = $this->getCountry($bin);
+
+        if ($country == 'Unknown') {
+            throw new BinLookupException('BinChecker.php: Country not found');
+        }
+
+        return in_array($country, $this->euCountries);
+    }
+
+    private function check(string $bin): array
     {
         $url = $this->apiUrl . $bin;
         
@@ -14,10 +36,7 @@ class BinChecker
         
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'Accept-Version: 3',
-        ]);
-        
+
         $response = curl_exec($ch);
         
         if (curl_errno($ch)) {
@@ -35,11 +54,11 @@ class BinChecker
         
         return $data;
     }
-    
-    public function getCountry(string $bin): string
+
+    private function getCountry(string $bin): string
     {
         $data = $this->check($bin);
-        
+
         if (isset($data['country']) && isset($data['country']['alpha2'])) {
             return $data['country']['alpha2'];
         }

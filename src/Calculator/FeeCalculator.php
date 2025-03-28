@@ -2,10 +2,15 @@
 
 namespace App\Calculator;
 
-class FeeCalculator
+use App\Contracts\FeeCalculatorInterface;
+
+class FeeCalculator implements FeeCalculatorInterface
 {
-    public function calculateFee(float $amount): float
+    private const BASE_CURRENCY = 'EUR';
+
+    public function calculateFee(float $amount, string $currency, float $rate, bool $isEu): float
     {
-        return $amount * 0.01;
+        $tempAmount = ($currency == self::BASE_CURRENCY || $rate == 0.0) ? $amount : $amount / $rate;
+        return $tempAmount * ($isEu ? 0.01 : 0.02);
     }
 }
