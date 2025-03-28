@@ -4,17 +4,20 @@ namespace App\Api;
 
 use App\Contracts\BinCheckerInterface;
 use App\Contracts\ConfigInterface;
+use App\Contracts\HttpClientInterface;
 use App\Exceptions\BinLookupException;
 
 class BinChecker implements BinCheckerInterface
 {
     private $apiUrl;
     private $euCountries;
-
-    public function __construct(ConfigInterface $config)
+    private $httpClient;
+    
+    public function __construct(ConfigInterface $config, HttpClientInterface $httpClient)
     {
         $this->apiUrl = $config->get('bin_lookup');
         $this->euCountries = $config->get('eu_countries');
+        $this->httpClient = $httpClient;
     }
 
     public function lookup(string $bin): bool
@@ -32,19 +35,11 @@ class BinChecker implements BinCheckerInterface
     {
         $url = $this->apiUrl . $bin;
         
-        $ch = curl_init();
+        $response = $this->httpClient->get($url);
         
-        curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-        $response = curl_exec($ch);
-        
-        if (curl_errno($ch)) {
-            curl_close($ch);
+        if ($response === false) {
             return [];
         }
-        
-        curl_close($ch);
         
         $data = json_decode($response, true);
         
